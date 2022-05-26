@@ -12,7 +12,7 @@ int main(void)
   // declare vars
   const double XA = 0.0; 
   const double XB = 10.0; 
-  const int N = 100000000;
+  const int N = 12000;
 
   // print result
   //std::cout << "Serial integral: " << integral_serial(XA, XB, N, f) << "\n";
@@ -24,7 +24,7 @@ int main(void)
 #pragma omp parallel
   {
     if(0 == omp_get_thread_num()) {
-      std::cout << omp_get_num_threads() << "\t" << t2 - t1 << std::endl;
+      std::cout  << "\t" << t2 - t1 << std::endl;
     }
   }
 }
@@ -42,11 +42,23 @@ double integral_serial(double a, double b, int N, fptr f)
   for(int ii = 0; ii < N; ++ii) {
     x = a + ii*dx;
     sum += dx*f(x);
+
+    
   }
+
   return sum;
 }
 
 double integral_openmp(double a, double b, int N, fptr f)
 {
-  TODO
+  const double dx = (b-a)/N; 
+  // compute integral
+  double sum = 0, x;
+#pragma omp parallel for reduction(+:sum) private(x)
+  for(int ii = 0; ii < N; ++ii) {
+    x = a + ii*dx;
+    sum += dx*f(x);
+  }
+  return sum;
+  
 }
