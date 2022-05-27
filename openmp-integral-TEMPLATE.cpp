@@ -1,3 +1,4 @@
+// AUTHORS: CINDY PADILLA, DANIELA DAZA
 #include <iostream>
 #include <omp.h>
 
@@ -12,7 +13,7 @@ int main(void)
   // declare vars
   const double XA = 0.0; 
   const double XB = 10.0; 
-  const int N = 12000;
+  const int N = 120000;
 
   // print result
   //std::cout << "Serial integral: " << integral_serial(XA, XB, N, f) << "\n";
