@@ -13,21 +13,27 @@ int main(void)
   // declare vars
   const double XA = 0.0; 
   const double XB = 10.0; 
-  const int N = 10000000;
-
+  const int w_per_thread = 12000;
+  int nth = 0;
+  int N = w_per_thread;
+  const double exact = 1000.0/3.0;
+  
+  #pragma omp parallel
+  {
+    if(0 == omp_get_thread_num()) {
+      nth = omp_get_num_threads();
+      //std::cout << nth << "\t" << t2 - t1 << std::endl;
+    }
+  }
+  N = nth*w_per_thread;
+  
   // print result
-  //std::cout << "Serial integral: " << integral_serial(XA, XB, N, f) << "\n";
-  //std::cout << "Serial openmp  : " << integral_openmp(XA, XB, N, f) << "\n";
+  double s_int = integral_serial(XA, XB, w_per_thread, f);
+  double p_int = integral_openmp(XA, XB, N, f);
   double t1 = omp_get_wtime();
   integral_openmp(XA, XB, N, f);
   double t2 = omp_get_wtime();
-
-#pragma omp parallel
-  {
-    if(0 == omp_get_thread_num()) {
-      std::cout << omp_get_num_threads() << "\t" << t2 - t1 << std::endl;
-    }
-  }
+  std::cout << nth << '\t' << N << '\t' << t2-t1 << '\t' << s_int << '\t' << p_int << '\t' << exact << '\t' << 1 - p_int/exact << std::endl;
 }
 
 double f(double x)
